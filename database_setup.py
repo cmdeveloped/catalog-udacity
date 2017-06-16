@@ -25,10 +25,11 @@ class CategoryItem(Base):
 
     __tablename__ = 'category_item'
 
-    # Mappers for our class category 
+    # Mappers for our class category
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
     description = Column(String(250))
+    genre = Column(String(80))
     category_id = Column(Integer, ForeignKey('category.id'))
 
 engine = create_engine('sqlite:///catalog.db')
