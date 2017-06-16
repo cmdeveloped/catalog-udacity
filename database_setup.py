@@ -31,6 +31,7 @@ class CategoryItem(Base):
     description = Column(String(250))
     genre = Column(String(80))
     category_id = Column(Integer, ForeignKey('category.id'))
+    category = relationship(Category)
 
 engine = create_engine('sqlite:///catalog.db')
 
