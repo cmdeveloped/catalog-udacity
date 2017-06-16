@@ -41,3 +41,6 @@ category4 = Category(name = 'Mobile')
 
 session.add(category4)
 session.commit()
+
+
+print 'You added items to the catalog!'
