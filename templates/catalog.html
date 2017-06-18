@@ -2,6 +2,9 @@
   <body>
     <h1>{{ category.name }}</h1>
 
+    <a href='{{url_for('newCategoryItem', category_id=category.id)}}' >Add New Game!</a>
+  </br></br>
+
     {% for i in items %}
 
     {{i.name}}
