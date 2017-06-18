@@ -42,7 +42,7 @@ def editCategoryItem(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/delete/', methods=['GET','POST'])
 def deleteCategoryItem(category_id, item_id):
-    deletedItem = session.query(CategoryItem).filter_by(id = category_id).one()
+    deletedItem = session.query(CategoryItem).filter_by(id = item_id).one()
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
