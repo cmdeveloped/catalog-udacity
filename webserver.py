@@ -43,8 +43,8 @@ class webserverHandler(BaseHTTPRequestHandler):
                     output += myCategoryQuery.name
                     output += "</h1>"
                     output += "<form method='POST' enctype='multipart/form-data' action = '/categories/%s/edit' >" % categoryIDPath
-                    output += "<input name = 'newCategoryName' type='text' placeholder = '%s' >" % myCategoryQuery.name
-                    output += "<input type = 'submit' value = 'Rename'>"
+                    output += "<input name='newCategoryName' type='text' placeholder='%s' >" % myCategoryQuery.name
+                    output += "<input type='submit' value='Rename'>"
                     output += "</form>"
                     output += "</body></html>"
 
@@ -102,10 +102,9 @@ class webserverHandler(BaseHTTPRequestHandler):
                     messagecontent = fields.get('newCategoryName')
                     categoryIDPath = self.path.split("/")[2]
 
-                    myCategoryQuery = session.query(Category).filter_by(
-                        id=categoryIDPath).one()
+                    myCategoryQuery = session.query(Category).filter_by(id = categoryIDPath).one()
                     if myCategoryQuery != []:
-                        myCategoryQuery.name = messagecontent[0]
+                        myCategoryQuery.name=messagecontent[0]
                         session.add(myCategoryQuery)
                         session.commit()
                         self.send_response(301)
@@ -133,7 +132,7 @@ class webserverHandler(BaseHTTPRequestHandler):
                 messagecontent = fields.get('newCategoryName')
 
                 # create categories
-                newCategory = Category(name = messagecontent[0])
+                newCategory = Category(name=messagecontent[0])
                 session.add(newCategory)
                 session.commit()
 
