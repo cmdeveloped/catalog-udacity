@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 # create session and connect to database
 engine = create_engine('sqlite:///catalog.db')
 Base.metadata.bind = engine
-DBSession = sessionmaker(bind = engine)
+DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 class webserverHandler(BaseHTTPRequestHandler):
