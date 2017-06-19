@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem
@@ -10,6 +10,13 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+# JSON route / API Endpoint using a GET request
+@app.route('/catalog/<int:category_id>/games/JSON')
+def catalogGamesJSON(category_id):
+    category = session.query(Category).filter_by(id = category_id).one()
+    items = session.query(CategoryItem).filter_by(category_id = category_id).all()
+    return jsonify(CategoryItems=[i.serialize for i in items])
 
 @app.route('/')
 @app.route('/catalog/<int:category_id>/')

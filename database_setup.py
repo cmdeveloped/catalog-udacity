@@ -33,6 +33,16 @@ class CategoryItem(Base):
     category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
 
+    @property
+    def serialize(self):
+        # This returns object data in serialized format
+        return {
+            'name' : self.name,
+            'description' : self.description,
+            'id' : self.id,
+            'genre' : self.genre,
+        }
+
 engine = create_engine('sqlite:///catalog.db')
 
 Base.metadata.create_all(engine)
