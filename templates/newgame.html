@@ -1,14 +1,23 @@
 <html>
-  <body>
+<head>
+  <title>Udacity Catalog Project</title>
+  <link rel='stylesheet' type='text/css' href="{{url_for('static', filename='styles.min.css')}}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+  <body class='container'>
+    <header class='header'>
+      <h1>Udacity Catalog Application Project</h1>
+    </header>
 
-    <h1>Add a new game!</h1>
+    <section class='content'>
+      <h1>Add a new game!</h1>
 
-    <form action="{{url_for('newCategoryItem', category_id=category_id )}}" method='post'>
-      <p>Game Title:</p>
-      <input type='text' size='30' name='name'>
+      <form action="{{url_for('newCategoryItem', category_id=category_id )}}" method='post'>
+        <p>Game Title:</p>
+        <input type='text' size='30' name='name'>
 
-      <input type='submit' value='Add'>
-    </form>
-
+        <input type='submit' value='Add'>
+      </form>
+    </section>
   </body>
 </html>

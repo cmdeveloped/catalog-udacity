@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem
@@ -24,6 +24,7 @@ def newCategoryItem(category_id):
         newGame = CategoryItem(name = request.form['name'], category_id = category_id)
         session.add(newGame)
         session.commit()
+        flash('New Game Created!')
         return redirect(url_for('mainCatalog', category_id=category_id))
     else:
         return render_template('newgame.html', category_id=category_id)
@@ -36,6 +37,7 @@ def editCategoryItem(category_id, item_id):
             editedItem.name = request.form['name']
         session.add(editedItem)
         session.commit()
+        flash('Game has been edited!')
         return redirect(url_for('mainCatalog', category_id = category_id))
     else:
         return render_template('editgame.html', category_id = category_id, item_id = item_id, i = editedItem)
@@ -46,6 +48,7 @@ def deleteCategoryItem(category_id, item_id):
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
+        flash('Game has been deleted!')
         return redirect(url_for('mainCatalog', category_id = category_id))
     else:
         return render_template('deletegame.html', i = deletedItem)
@@ -53,5 +56,6 @@ def deleteCategoryItem(category_id, item_id):
 
 
 if __name__ == '__main__':
+    app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host = '0.0.0.0', port = 5000)
