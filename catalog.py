@@ -3,6 +3,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Category, CategoryItem
 
+# Import for Secure Access
+from flask import session as login_session
+import random, string
+
 app = Flask(__name__)
 
 engine = create_engine('sqlite:///catalog.db')
@@ -11,12 +15,25 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-# JSON route / API Endpoint using a GET request
+# Creating a state token to prevent request forgery
+# Storing said token in the flask session for later validation from user
+@app.route('/login')
+def showLogin():
+    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return "This session's state is: %s" %login_session['state']
+
+# JSON routes / API Endpoint using a GET request
 @app.route('/catalog/<int:category_id>/games/JSON')
 def catalogGamesJSON(category_id):
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CategoryItem).filter_by(category_id = category_id).all()
     return jsonify(CategoryItems=[i.serialize for i in items])
+
+@app.route('/catalog/<int:category_id>/game/<int:game_id>/JSON')
+def catalogGameJSON(category_id, game_id):
+    catalogGame = session.query(CategoryItem).filter_by(id = game_id).one()
+    return jsonify(CatalogGame = catalogGame.serialize)
 
 @app.route('/')
 @app.route('/catalog/<int:category_id>/')
@@ -38,7 +55,7 @@ def newCategoryItem(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/edit/', methods=['GET','POST'])
 def editCategoryItem(category_id, item_id):
-    editedItem = session.query(CategoryItem).filter_by(id = category_id).one()
+    editedItem = session.query(CategoryItem).filter_by(id = item_id).one()
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']

@@ -6,7 +6,7 @@
 </head>
   <body class='container'>
     <header class='header'>
-      <h1>Udacity Catalog Application Project</h1>
+      <h1>Udacity Catalog Application</h1>
     </header>
 
     <section class='content'>
@@ -27,17 +27,14 @@
 
         {% for i in items %}
 
-        {{i.name}}
+        <h3>{{i.name}}</h3>
+
+        <p>{{i.description}}</p>
+
+        <a href='{{url_for('editCategoryItem', category_id = category.id, item_id = i.id )}}' >Edit</a>
+
+        <a href='{{url_for('deleteCategoryItem', category_id = category.id, item_id = i.id)}}' >Delete</a>
       </br>
-
-        {{i.description}}
-      </br>
-
-      <a href='{{url_for('editCategoryItem', category_id = category.id, item_id = i.id )}}' >Edit</a>
-      <br>
-
-      <a href='{{url_for('deleteCategoryItem', category_id = category.id, item_id = i.id)}}' >Delete</a>
-      </br></br>
 
       {% endfor %}
     </section>

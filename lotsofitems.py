@@ -41,7 +41,7 @@ item1 = CategoryItem(name = "Uncharted 4", description = "Nathan Drake is forced
 session.add(item1)
 session.commit()
 
-item2 = CategoryItem(name = "FIFA 17", description = "EA SPORTS FIFA 18 blurs the line between the virtual and real worldsof The Worlds Game.", genre = "Sports", category = category1)
+item2 = CategoryItem(name = "FIFA 17", description = "EA SPORTS FIFA 18 blurs the line between the virtual and real worlds of The Worlds Game.", genre = "Sports", category = category1)
 
 session.add(item2)
 session.commit()
