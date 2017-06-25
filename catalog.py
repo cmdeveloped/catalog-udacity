@@ -17,7 +17,7 @@ session = DBSession()
 
 # Creating a state token to prevent request forgery
 # Storing said token in the flask session for later validation from user
-@app.route('/login')
+@app.route('/login/')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
@@ -36,6 +36,11 @@ def catalogGameJSON(category_id, game_id):
     return jsonify(CatalogGame = catalogGame.serialize)
 
 @app.route('/')
+@app.route('/catalog/')
+def mainView():
+    catalog = session.query(Category).all()
+    return render_template('catalog.html', catalog = catalog)
+
 @app.route('/catalog/<int:category_id>/')
 def mainCatalog(category_id):
     category = session.query(Category).filter_by(id = category_id).one()

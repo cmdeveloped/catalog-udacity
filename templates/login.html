@@ -1,0 +1,57 @@
+<html>
+<head>
+  <title>Udacity Catalog Project</title>
+  <meta name="google-signin-client_id" content="878436137591-rio4q46ea5c53hkhn6rs7pglv568lv7h.apps.googleusercontent.com">
+  <link rel='stylesheet' href="{{url_for('static', filename='../static/styles.min.css')}}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+</head>
+<body class='container'>
+  <section class='signin'>
+    <h1>Please Sign In</h1>
+  </section>
+
+  <div id='signinButton'>
+    <span class='g-signin2'
+      data-scope='openid email'
+      data-clientid='878436137591-rio4q46ea5c53hkhn6rs7pglv568lv7h.apps.googleusercontent.com'
+      data-redirecturi='postmessage'
+      data-accesstype='offline'
+      data-cookiepolicy='single_host_origin'
+      data-callback='signInCallback'
+      data-approvalprompt='force'>
+    </span>
+  </div>
+  <div id='result'></div>
+
+<script>
+function signInCallback(authResult) {
+  if (authResult['code']) {
+    // Hiding the sign-in button after authorization complete
+    $('#signinButton').attr('style', 'display: none;');
+    $.ajax({
+      type: 'POST',
+      url: '/gconnect?state={{STATE}}',
+      processData: false,
+      contentType: 'application/octet-stream; charset=utf-8',
+      data: authResult['code'],
+      success: function(result) {
+        if (result) {
+          $('#result').html('Login Successful!</br>' + result + '</br>Connecting....')
+          setTimeout(function() {
+            window.location.href = '/catalog/';
+          }, 3000);
+        } else if (authResult['error']) {
+          console.log('There was an error bro.' + authResult['error']);
+        } else {
+          $('#result').html('Failed to make a server-side call. Please check your configuration and console for any error messages.')
+        }
+      }
+    });
+  }
+}
+
+</body>
+</html>
