@@ -9,6 +9,7 @@ import random, string
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from oauth2client.client import AccessTokenCredentials
 import httplib2
 import json
 
@@ -59,7 +60,7 @@ def gconnect():
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
     h = httplib2.Http()
-    result = json.loads(h.request(url, 'GET').decode()[1])
+    result = json.loads(h.request(url, 'GET')[1])
 
     # If there was an error in the access token info, abort.
     if result.get('error') is not None:
@@ -92,7 +93,8 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = credentials
+    login_session['credentials'] = credentials.access_token
+    credentials = AccessTokenCredentials(login_session['credentials'], 'user-agent-value')
     login_session['gplus_id'] = gplus_id
     response = make_response(json.dumps('Successfully connected user.', 200))
 
