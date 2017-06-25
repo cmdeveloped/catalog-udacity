@@ -28,7 +28,7 @@ session = DBSession()
 
 # Creating a state token to prevent request forgery
 # Storing said token in the flask session for later validation from user
-@app.route('/login')
+@app.route('/login/')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
@@ -140,10 +140,10 @@ def mainView():
     return render_template('catalog.html', catalog = catalog)
 
 @app.route('/catalog/<int:category_id>/')
-def mainCatalog(category_id):
+def eachCatalog(category_id):
     category = session.query(Category).filter_by(id = category_id).one()
     items = session.query(CategoryItem).filter_by(category_id = category.id)
-    return render_template('catalog.html', category = category, items = items)
+    return render_template('categories.html', category = category, items = items)
 
 @app.route('/catalog/<int:category_id>/new/', methods=['GET','POST'])
 def newCategoryItem(category_id):
@@ -152,7 +152,7 @@ def newCategoryItem(category_id):
         session.add(newGame)
         session.commit()
         flash('New Game Created!')
-        return redirect(url_for('mainCatalog', category_id=category_id))
+        return redirect(url_for('eachCatalog', category_id=category_id))
     else:
         return render_template('newgame.html', category_id=category_id)
 
@@ -165,7 +165,7 @@ def editCategoryItem(category_id, item_id):
         session.add(editedItem)
         session.commit()
         flash('Game has been edited!')
-        return redirect(url_for('mainCatalog', category_id = category_id))
+        return redirect(url_for('eachCatalog', category_id = category_id))
     else:
         return render_template('editgame.html', category_id = category_id, item_id = item_id, i = editedItem)
 
@@ -176,7 +176,7 @@ def deleteCategoryItem(category_id, item_id):
         session.delete(deletedItem)
         session.commit()
         flash('Game has been deleted!')
-        return redirect(url_for('mainCatalog', category_id = category_id))
+        return redirect(url_for('eachCatalog', category_id = category_id))
     else:
         return render_template('deletegame.html', i = deletedItem)
 

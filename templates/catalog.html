@@ -16,7 +16,7 @@
 
       {% for c in catalog %}
 
-      <h3>{{ c.name }}</h3>
+      <h3><a href='{{url_for('eachCatalog', category_id=c.id)}}'>{{ c.name }}</a></h3>
 
       {% endfor %}
 
