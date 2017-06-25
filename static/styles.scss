@@ -6,10 +6,22 @@ $primary: #610000;
 
 .header {
   background-color: $primary;
-  color: #fff;
+    color: #fff;
+    padding: 30px;
+    text-align: center;
   h1 {
-    padding: 20px;
     margin: 0;
+  }
+  a {
+    padding: 10px;
+    background: #fff;
+    color: $primary;
+    font-weight: bold;
+    font-size: 22px;
+  }
+  a:hover {
+    text-decoration: none;
+    color: grey;
   }
 }
 
