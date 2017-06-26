@@ -14,14 +14,15 @@ $primary: #610000;
   }
   a {
     padding: 10px;
-    background: #fff;
-    color: $primary;
+    background: $primary;
+    color: #fff;
     font-weight: bold;
     font-size: 22px;
   }
   a:hover {
     text-decoration: none;
-    color: grey;
+    color: $primary;
+    background: #fff;
   }
 }
 
