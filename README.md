@@ -6,7 +6,7 @@ This app uses: Flask, SQLAlchemy, OAuth2.0
 1. Clone or download project.
 2. Make sure you have Vagrant and Oracle VM VirtualBox to run program.
 3. Run vagrant up to start virtual environment, and vagrant ssh to get started.
-4. Change directories to the catalog by following '../../vagrant/catalog' path.
+4. Change directories to the catalog by following ```../../vagrant/catalog``` path.
 5. Run application.
 6. Access application at localhost:5000/catalog
 
