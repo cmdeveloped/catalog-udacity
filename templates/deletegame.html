@@ -8,7 +8,8 @@
   <body class='container'>
     <header class='row header'>
       <h1 class='col-md-8'>Udacity Catalog Application</h1>
-      <a class='col-md-4' href='{{url_for('showLogin')}}'>Login</a>
+      <a id='loginButton' class='col-md-4' href='{{url_for('showLogin')}}'>Login</a>
+      <a id='logoutButton' class='col-md-4' href='#' style='display:none'}}>Logout</a>
     </header>
 
     <section class='content'>
@@ -18,7 +19,7 @@
         <input type='submit', value='Delete'>
       </form>
 
-      <a href='{{url_for('mainCatalog', item_id = i.id, category_id = i.category_id)}}'>Cancel</a>
+      <a href='{{url_for('eachCatalog', item_id = i.id, category_id = i.category_id)}}'>Cancel</a>
     </section>
   </body>
 </html>

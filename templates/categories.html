@@ -8,21 +8,12 @@
   <body class='container'>
     <header class='row header'>
       <h1 class='col-md-8'>Udacity Catalog Application</h1>
-      <a class='col-md-4' href='{{url_for('showLogin')}}'>Login</a>
+      <a id='loginButton' class='col-md-4' href='{{url_for('showLogin')}}'>Login</a>
+      <a id='logoutButton' class='col-md-4' href='#' style='display:none'}}>Logout</a>
     </header>
 
     <section class='content'>
-      <h1>{{ category.name }}</h1>
-
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <ul>
-            {% for message in messages %}
-              <li><strong> {{ message }} </strong></li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-      {% endwith %}
+      <h1><a href='{{url_for('mainView')}}'>{{ category.name }}</a></h1>
 
       <a href='{{url_for('newCategoryItem', category_id=category.id)}}' >Add New Game!</a>
       </br></br>

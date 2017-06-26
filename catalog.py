@@ -115,10 +115,43 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 200px; height: 200px; border-radius: 100%;-webkit-border-radius: 100%;-moz-border-radius: 100%;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print ("done!")
     return output
+
+@app.route('/gdisconnect/')
+def gdisconnect():
+        # Only disconnect a connected user.
+    credentials = login_session.get('credentials')
+    if credentials is None:
+        response = make_response(
+            json.dumps('Current user not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    access_token = credentials.access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    if result['status'] == '200':
+        # Reset the user's sesson.
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+
+        response = make_response(json.dumps('Successfully disconnected.'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        # For whatever reason, the given token was invalid.
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.', 400))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
 
 
 # JSON routes / API Endpoint using a GET request
@@ -164,7 +197,13 @@ def editCategoryItem(category_id, item_id):
             editedItem.name = request.form['name']
         session.add(editedItem)
         session.commit()
-        flash('Game has been edited!')
+        flash('Game title has been edited!')
+
+        if request.form['description']:
+            editedItem.description = request.form['description']
+        session.add(editedItem)
+        session.commit()
+        flash('Game description has been edited!')
         return redirect(url_for('eachCatalog', category_id = category_id))
     else:
         return render_template('editgame.html', category_id = category_id, item_id = item_id, i = editedItem)
