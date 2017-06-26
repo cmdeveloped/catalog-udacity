@@ -122,20 +122,18 @@ def gconnect():
 
 @app.route('/gdisconnect/')
 def gdisconnect():
-        # Only disconnect a connected user.
     credentials = login_session.get('credentials')
     if credentials is None:
-        response = make_response(
-            json.dumps('Current user not connected.'), 401)
+        response = make_response(json.dumps('Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    access_token = credentials.access_token
+
+    access_token = login_session['credentials']
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
 
     if result['status'] == '200':
-        # Reset the user's sesson.
         del login_session['credentials']
         del login_session['gplus_id']
         del login_session['username']
@@ -146,12 +144,9 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        # For whatever reason, the given token was invalid.
-        response = make_response(
-            json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps('Failed to revoke token for given user.'), 400)
         response.headers['Content-Type'] = 'application/json'
         return response
-
 
 
 # JSON routes / API Endpoint using a GET request
@@ -180,6 +175,8 @@ def eachCatalog(category_id):
 
 @app.route('/catalog/<int:category_id>/new/', methods=['GET','POST'])
 def newCategoryItem(category_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newGame = CategoryItem(name = request.form['name'], category_id = category_id)
         session.add(newGame)
@@ -191,6 +188,8 @@ def newCategoryItem(category_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/edit/', methods=['GET','POST'])
 def editCategoryItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     editedItem = session.query(CategoryItem).filter_by(id = item_id).one()
     if request.method == 'POST':
         if request.form['name']:
@@ -210,6 +209,8 @@ def editCategoryItem(category_id, item_id):
 
 @app.route('/catalog/<int:category_id>/<int:item_id>/delete/', methods=['GET','POST'])
 def deleteCategoryItem(category_id, item_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     deletedItem = session.query(CategoryItem).filter_by(id = item_id).one()
     if request.method == 'POST':
         session.delete(deletedItem)
