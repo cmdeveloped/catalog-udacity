@@ -34,6 +34,14 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+    @property
+    def serialize(self):
+        return {
+        'name' : self.name,
+        'id' : self.id,
+        'user_id' : self.user_id,
+        }
+
 
 class CategoryItem(Base):
 

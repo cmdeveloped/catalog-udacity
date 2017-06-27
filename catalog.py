@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask import flash, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Category, CategoryItem
+from database_setup import Base, Category, CategoryItem, User
 
 # Import for Secure Access
 from flask import session as login_session
@@ -119,6 +119,12 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # Check if user exists
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -130,6 +136,28 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     print ("done!")
     return output
+
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 
 # Application route to disconnect the user logged in and revoke access to certain features.
@@ -193,7 +221,10 @@ def mainView():
 def eachCatalog(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(CategoryItem).filter_by(category_id=category.id)
-    return render_template('categories.html', category=category, items=items)
+    if 'username' not in login_session:
+        return render_template('publiccategories.html', category=category, items=items)
+    else:
+        return render_template('categories.html', category=category, items=items)
 
 
 # Route to create a new category item
@@ -203,7 +234,7 @@ def newCategoryItem(category_id):
         return redirect('/login')
     if request.method == 'POST':
         newGame = CategoryItem(
-            name=request.form['name'], category_id=category_id)
+            name=request.form['name'], description=request.form['description'], genre=request.form['genre'], category_id=category_id, user_id=category.user_id)
         session.add(newGame)
         session.commit()
         flash('New Game Created!')
