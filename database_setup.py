@@ -39,7 +39,6 @@ class Category(Base):
         return {
         'name' : self.name,
         'id' : self.id,
-        'user_id' : self.user_id,
         }
 
 
@@ -65,6 +64,7 @@ class CategoryItem(Base):
             'description' : self.description,
             'id' : self.id,
             'genre' : self.genre,
+            'user_id' : self.user_id,
         }
 
 engine = create_engine('sqlite:///catalog.db')

@@ -120,7 +120,7 @@ def gconnect():
     login_session['email'] = data['email']
 
     # Check if user exists
-    user_id = getUserID(login_session['email'])
+    user_id = getUserID(data["email"])
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
@@ -217,24 +217,25 @@ def mainView():
 
 
 # Route to view each category and its items
-@app.route('/catalog/<int:category_id>/')
+@app.route('/catalog/<int:category_id>/games/')
 def eachCatalog(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(CategoryItem).filter_by(category_id=category.id)
-    if 'username' not in login_session:
+    if 'username' is None:
         return render_template('publiccategories.html', category=category, items=items)
     else:
         return render_template('categories.html', category=category, items=items)
 
 
 # Route to create a new category item
-@app.route('/catalog/<int:category_id>/new/', methods=['GET', 'POST'])
+@app.route('/catalog/<int:category_id>/games/new/', methods=['GET', 'POST'])
 def newCategoryItem(category_id):
     if 'username' not in login_session:
         return redirect('/login')
+    category = session.query(Category).filter_by(id=category_id).one()
     if request.method == 'POST':
         newGame = CategoryItem(
-            name=request.form['name'], description=request.form['description'], genre=request.form['genre'], category_id=category_id, user_id=category.user_id)
+            name=request.form['name'], description=request.form['description'], genre=request.form['genre'], category_id=category_id, user_id=login_session['user_id'])
         session.add(newGame)
         session.commit()
         flash('New Game Created!')
@@ -244,12 +245,14 @@ def newCategoryItem(category_id):
 
 
 # Route to edit category item
-@app.route('/catalog/<int:category_id>/<int:item_id>/edit/',
+@app.route('/catalog/<int:category_id>/games/<int:item_id>/edit/',
            methods=['GET', 'POST'])
 def editCategoryItem(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
     editedItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    if login_session['user_id'] != editedItem.user_id:
+        return "<script>function myFunction() {alert('You are not authorized for this change. Please create your own Game Entry in order to edit.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         if request.form['name']:
             editedItem.name = request.form['name']
@@ -269,12 +272,14 @@ def editCategoryItem(category_id, item_id):
 
 
 # Route to delete the category items
-@app.route('/catalog/<int:category_id>/<int:item_id>/delete/',
+@app.route('/catalog/<int:category_id>/games/<int:item_id>/delete/',
            methods=['GET', 'POST'])
 def deleteCategoryItem(category_id, item_id):
     if 'username' not in login_session:
         return redirect('/login')
     deletedItem = session.query(CategoryItem).filter_by(id=item_id).one()
+    if login_session['user_id'] != deletedItem.user_id:
+        return "<script>function myFunction() {alert('You are not authorized for this change. Please create your own Game Entry in order to delete.');}</script><body onload='myFunction()''>"
     if request.method == 'POST':
         session.delete(deletedItem)
         session.commit()
