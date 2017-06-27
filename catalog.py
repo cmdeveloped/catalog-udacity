@@ -221,7 +221,7 @@ def mainView():
 def eachCatalog(category_id):
     category = session.query(Category).filter_by(id=category_id).one()
     items = session.query(CategoryItem).filter_by(category_id=category.id)
-    if 'username' is None:
+    if 'username' not in login_session:
         return render_template('publiccategories.html', category=category, items=items)
     else:
         return render_template('categories.html', category=category, items=items)
